@@ -7,7 +7,7 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 // Change this by setting environment variable QRLIO_API
-const server = process.env.QRLIO_API ? process.env.QRLIO_API : "https://qrlio.com/api/";
+const server = process.env.QRLIO_API ? process.env.QRLIO_API : "https://qrlio.com/qrl-api/";
 
 let key, user, client, credits, profiles;
 
@@ -62,4 +62,20 @@ exports.qrlioGetQR = async (serial, app="https://qrlio.com") => {
     const call = `${server}qrl?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}&name=${ec(serial)}&app=${app}`;
     const response = await fetch(call);
     const data = await response.json();
+    return data;
+}
+
+exports.qrlioUpdatePosition = async (serial, lat, lng) => {
+    const call = `${server}updateposition?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}&name=${ec(serial)}&lat=${ec(lat)}&lng=${ec(lng)}`;
+    const response = await fetch(call);
+    const data = await response.json(); // Data contains full event list for the node.
+    return true;
+}
+
+// List all qrls by client
+exports.qrlioListAll = async () => {
+    const call = `${server}list?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}`;
+    const response = await fetch(call);
+    const data = await response.json(); // Data contains full event list for the node.
+    return data;
 }
