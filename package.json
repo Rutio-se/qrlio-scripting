@@ -1,6 +1,6 @@
 {
   "name": "qrlio-script",
-  "version": "0.10.0",
+  "version": "0.10.2",
   "author": {"name": "Lars Mats", "email": "info@qrlio.com", "url": "https://www.qrlio.com"},
   "description": "Node.js Scripting API for qrlio.com",
   "license": "MIT",
