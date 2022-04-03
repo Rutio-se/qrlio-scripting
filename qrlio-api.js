@@ -72,6 +72,15 @@ exports.qrlioGetQR = async (serial, app="https://qrlio.com") => {
     return data;
 }
 
+// Retreive the data associated with serial, will also record that it was checked in with the associated action
+exports.qrlioCheckIn = async (serial, action="ApiCheckin") => {
+    const call = `${server}checkin?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}&name=${ec(serial)}&action=${ec(action)}`;
+    const response = await fetch(call);
+    const data = await response.json(); // Data contains full event list for node, and data, etc.
+    console.log("Checkin: " + action, data);
+    return data;
+}
+
 // Update the position for a given serial number. Useful if you want an initial position when registerring serials or otherwise want to upadte
 // the position for a given serial number.
 exports.qrlioUpdatePosition = async (serial, lat, lng) => {
@@ -88,3 +97,4 @@ exports.qrlioListAll = async () => {
     const data = await response.json(); // Data contains full event list for the node.
     return data;
 }
+
