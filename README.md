@@ -19,7 +19,7 @@ __Installation by NPM/Yarn__
    const f = async () => {
       const login = await qrlio.qrlioLogin("myusername", "mypassword");
       console.log(login);
-      console.log(qrlio.qrlioGetClient())
+      console.log(qrlio.qrlioGetClient());
    }
    f();
 ``` 
@@ -34,3 +34,20 @@ __Installation by Source__
 3. Make your own script or try the example script:
 
    USER={your-username} PASS={your-password} node example.js
+
+__API (v1) versus API v2__
+
+The v2 API differs by that it does not cache a single user session but instead has a
+separate object for each user. This is in order to support context-free servers which
+serves requests by multiple users. In this version the Login function returns an object
+which is then used as the first parameter in each subsequent call. You can have multiple
+sessions at once.
+
+``` 
+   const qrlio = require('qrlio-script/qrlio-api-v2');
+   const f = async () => {
+      const session = await qrlio.qrlioLogin("myusername", "mypassword");
+      console.log(qrlio.qrlioGetClient(session));
+   }
+   f();
+``` 
