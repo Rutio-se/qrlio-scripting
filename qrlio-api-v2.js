@@ -96,6 +96,17 @@ exports.qrlioUpdatePosition = async (qobj, serial, lat, lng) => {
     return true;
 }
 
+// Update data 
+// Include a "edits" object which have the fields set which you want to edit. No other fields are updated.
+// Returns the resulting updated object
+exports.qrlioEdits = async (qobj, serial, edits) => {
+    checkQObject(qobj);
+    const call = `${server}edits?user=${ec(qobj.user)}&key=${ec(qobj.key)}&client=${ec(qobj.client)}&name=${ec(serial)}&edits=${ec(JSON.stringify(edits))}`;
+    const response = await fetch(call);
+    const data = await response.json(); // Data contains full event list for the node.
+    return data; // Return the resulting object
+}
+
 // List all serials (with hash and creation date) for a given client.
 exports.qrlioListAll = async (qobj) => {
     checkQObject(qobj);
