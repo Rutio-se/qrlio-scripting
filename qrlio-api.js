@@ -41,7 +41,18 @@ const ec = x=>encodeURIComponent(x);
 exports.qrlioLogin = async (username, password) => {
     const call = server+"login?user="+ec(username)+"&pass="+ec(password);
     const response = await fetch(call);
-    const data = await response.json();
+    const text = await response.text();
+    let data;
+    try {
+        data = json.parse(text);
+    } catch (e) {
+        console.log("Qrlio failed to login: " + text);
+        return false;
+    }
+    if (!(data.key && data.client )) {
+        console.log("Qrlio login did not return required fields");
+        return false;
+    }
     key = data.key;
     user = username;
     client = data.client;
@@ -54,6 +65,8 @@ exports.qrlioLogin = async (username, password) => {
 // Profile is the profile name, serial is the wanted serial number (any string up to 44 characters long), value is any values
 // other than default values matching the values of the profile.
 exports.qrlioRegister = async (serial, profile, value) => {
+    if (!key)
+        throw {message: "Qrlio not logged in"};
     const v=JSON.stringify(value);
     const call = `${server}register?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}&name=${ec(serial)}&profile=${ec(profile)}&value=${ec(v)}`;
     const response = await fetch(call);
@@ -66,6 +79,8 @@ exports.qrlioRegister = async (serial, profile, value) => {
 // (the app parameter is generally not used, but if you want to have a different landing page than the default you can use it and then 
 // forward the call to qrlio.com (be sure to include the hash parameter in the forward))
 exports.qrlioGetQR = async (serial, app="https://qrlio.com") => {
+    if (!key)
+        throw {message: "Qrlio not logged in"};
     const call = `${server}qrl?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}&name=${ec(serial)}&app=${ec(app)}`;
     const response = await fetch(call);
     const data = await response.json();
@@ -74,6 +89,8 @@ exports.qrlioGetQR = async (serial, app="https://qrlio.com") => {
 
 // Retreive the data associated with serial, will also record that it was checked in with the associated action
 exports.qrlioCheckIn = async (serial, action="ApiCheckin") => {
+    if (!key)
+        throw {message: "Qrlio not logged in"};
     const call = `${server}checkin?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}&name=${ec(serial)}&action=${ec(action)}`;
     const response = await fetch(call);
     const data = await response.json(); // Data contains full event list for node, and data, etc.
@@ -83,6 +100,8 @@ exports.qrlioCheckIn = async (serial, action="ApiCheckin") => {
 // Update the position for a given serial number. Useful if you want an initial position when registerring serials or otherwise want to upadte
 // the position for a given serial number.
 exports.qrlioUpdatePosition = async (serial, lat, lng) => {
+    if (!key)
+        throw {message: "Qrlio not logged in"};
     const call = `${server}updateposition?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}&name=${ec(serial)}&lat=${ec(lat)}&lng=${ec(lng)}`;
     const response = await fetch(call);
     const data = await response.json(); // Data contains full event list for the node.
@@ -91,6 +110,8 @@ exports.qrlioUpdatePosition = async (serial, lat, lng) => {
 
 // List all serials (with hash and creation date) for a given client.
 exports.qrlioListAll = async () => {
+    if (!key)
+        throw {message: "Qrlio not logged in"};
     const call = `${server}list?user=${ec(user)}&key=${ec(key)}&client=${ec(client)}`;
     const response = await fetch(call);
     const data = await response.json(); // Data contains full event list for the node.

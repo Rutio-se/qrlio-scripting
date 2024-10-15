@@ -47,7 +47,13 @@ const ec = x=>encodeURIComponent(x);
 exports.qrlioLogin = async (username, password) => {
     const call = server+"login?user="+ec(username)+"&pass="+ec(password);
     const response = await fetch(call);
-    let qobj = await response.json();
+    let text = await response.text();
+    let qobj;
+    try {
+        qobj = JSON.parse(text);
+    } catch (e) {
+        throw {message: "Qrlio login failed: " + text};
+    }    
     qobj.user = username;
     return qobj;
 }

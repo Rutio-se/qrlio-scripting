@@ -1,7 +1,11 @@
 {
   "name": "qrlio-script",
-  "version": "0.14.0",
-  "author": {"name": "Lars Mats", "email": "info@qrlio.com", "url": "https://www.qrlio.com"},
+  "version": "0.15.0",
+  "author": {
+    "name": "Lars Mats",
+    "email": "info@qrlio.com",
+    "url": "https://www.qrlio.com"
+  },
   "description": "Node.js Scripting API for qrlio.com",
   "license": "MIT",
   "dependencies": {
